@@ -10,3 +10,7 @@ This library primarily focuses on the Web plarform use-cases. It aims to solve t
 - Send messages between Js plugins.
 - Build from a script.
 - Support for non-Web platforms.
+
+**Setup**
+- Create a folder named `Plugins` in the `Assets` folder of your Unity project.
+- Clone this repo inside the `Plugins` folder.
