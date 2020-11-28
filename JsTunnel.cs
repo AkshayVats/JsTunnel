@@ -8,7 +8,7 @@ public class JsTunnel : MonoBehaviour, ITunnel {
     private static extern void Init(string objName);
 
     [DllImport("__Internal")]
-    private static extern void SendPacket(string packet);
+    private static extern void SendPacketToPlugin(string packet);
 
     [DllImport("__Internal")]
     private static extern int IsConnected();
@@ -26,7 +26,7 @@ public class JsTunnel : MonoBehaviour, ITunnel {
     }
 
     void ITunnel.SendPacket(string packet) {
-        JsTunnel.SendPacket(packet);
+        JsTunnel.SendPacketToPlugin(packet);
     }
 
     public event Action<string> OnPacketReceived;

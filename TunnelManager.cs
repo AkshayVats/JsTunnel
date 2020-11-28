@@ -3,9 +3,10 @@ using UnityEngine;
 
 [CreateAssetMenu]
 public class TunnelManager : ScriptableObject {
-    public string server;
-    public int port;   
-    public string npmCommand;
+    public string server = "127.0.0.1";
+    public int port = 8085;   
+    public string npmCommand = "npm run unity";
+    public string pluginName = "TestPlugin";
 
     // "/Dream"
     public string directoryPath;
@@ -19,7 +20,7 @@ public class TunnelManager : ScriptableObject {
             {
                 return _inst;
             }
-            var tunnel = new GameObject("JsTunnel");
+            var tunnel = new GameObject(pluginName);
             if (Application.platform == RuntimePlatform.WebGLPlayer && !Application.isEditor)
             {
                 return (_inst = tunnel.AddComponent<JsTunnel>());
