@@ -1,23 +1,21 @@
 JsTunnel = {
   Init: function(obj_name) {
-    obj_name_str = Pointer_stringify(obj_name);
-    TUNNEL = {
-      SendPacket: function(packet) {
-         SendMessage(obj_name_str, 'OnPacketReceivedInternal', packet);
-      },
-      SetOnPacketReceived: function(callback) {
-        this.OnPacketReceived = callback;
-      }
-    };
-    new FirebaseWrapper(TUNNEL, firebase);
+    var SendPacketToUnity = this.SendPacketToUnity;
+    this.obj_name_str = Pointer_stringify(obj_name);
+    this.plugin = new window[this.obj_name_str]();
+    this.plugin.SetSendPacketDelegate(function(packet) {SendPacketToUnity(packet);});
   },
 
-  SendPacket: function(packet) {
-    TUNNEL.OnPacketReceived(Pointer_stringify(packet));
+  SendPacketToUnity: function(packet) {
+    SendMessage(this.obj_name_str, 'OnPacketReceivedInternal', packet);
+  },
+
+  SendPacketToPlugin: function(packet) {
+    this.plugin.OnPacketReceived(Pointer_stringify(packet));
   },
 
   IsConnected: function() {
-    return (typeof TUNNEL !== 'undefined') && (typeof TUNNEL.OnPacketReceived !== 'undefined');
+    return (typeof this.plugin !== 'undefined');
   }
 };
 

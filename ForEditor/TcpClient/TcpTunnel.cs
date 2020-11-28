@@ -20,24 +20,25 @@ public class TcpTunnel:MonoBehaviour,ITunnel {
 
     private System.Diagnostics.Process process;
     private string log = "";
+    private int attempts;
 
-    void runCommand()
+    void RunCommand()
     {
         process = new System.Diagnostics.Process();
         process.StartInfo.FileName = "cmd.exe";
         process.StartInfo.Arguments = "/c " + npmCommand + " " + port; // Note the /c command (*)
         process.StartInfo.UseShellExecute = false;
-        //process.StartInfo.RedirectStandardOutput = true;
-        //process.StartInfo.RedirectStandardError = true;
+        process.StartInfo.RedirectStandardOutput = true;
+        process.StartInfo.RedirectStandardError = true;
         process.StartInfo.CreateNoWindow = true;
         process.StartInfo.WorkingDirectory = directoryPath;
         //* Set your output and error (asynchronous) handlers
-        //process.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(OutputHandler);
-        //process.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(OutputHandler);
+        process.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(OutputHandler);
+        process.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(OutputHandler);
         //* Start process and handlers
         process.Start();
-        //process.BeginOutputReadLine();
-        //process.BeginErrorReadLine();
+        process.BeginOutputReadLine();
+        process.BeginErrorReadLine();
     }
 
     void LogOutput() {
@@ -50,6 +51,7 @@ public class TcpTunnel:MonoBehaviour,ITunnel {
         log+=outLine.Data;
     }
     void TryConnect() {
+        if (attempts++ > 2) return;
         try {
         client = new TcpClient(server, port);
         } catch(Exception ex) {
@@ -58,7 +60,7 @@ public class TcpTunnel:MonoBehaviour,ITunnel {
     }
     void Start() {
         //InvokeRepeating("LogOutput", 2, 2);
-        runCommand();
+        RunCommand();
         TryConnect();
         stream = client.GetStream();
         _connected = true;
